@@ -11,7 +11,7 @@ export default function AdminPage() {
   const [lowOnly, setLowOnly] = useState(false);
 
   const tabCls = (active) =>
-    `border-b-2 px-4 py-2 text-sm font-semibold ${active ? 'border-amber-500 text-amber-400' : 'border-transparent text-neutral-400 hover:text-white'}`;
+    `border-b-2 px-4 py-2 text-sm font-semibold ${active ? 'border-lime-500 text-lime-400' : 'border-transparent text-neutral-400 hover:text-white'}`;
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">

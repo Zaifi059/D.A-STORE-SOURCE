@@ -6,7 +6,7 @@ export default function PosCart({
 }) {
   const optCls = (active) =>
     `flex flex-1 items-center justify-center gap-2 rounded-lg border py-2 text-sm font-semibold ${
-      active ? 'border-amber-500 bg-amber-500 text-black' : 'border-neutral-700 hover:border-amber-500'
+      active ? 'border-lime-500 bg-lime-500 text-black' : 'border-neutral-700 hover:border-lime-500'
     }`;
 
   return (
@@ -17,7 +17,7 @@ export default function PosCart({
           <div key={i.id} className="rounded-lg border border-neutral-800 bg-neutral-950 p-2">
             <div className="flex justify-between gap-2 text-sm">
               <span className="truncate">{i.name}</span>
-              <span className="font-semibold text-amber-400">{formatPKR(i.price * i.quantity)}</span>
+              <span className="font-semibold text-lime-400">{formatPKR(i.price * i.quantity)}</span>
             </div>
             <div className="mt-1 flex items-center justify-between">
               <span className="text-xs text-neutral-500">{formatPKR(i.price)} each</span>
@@ -34,7 +34,7 @@ export default function PosCart({
 
       <div className="space-y-3 border-t border-neutral-800 p-3">
         <div className="flex justify-between text-xl font-bold">
-          <span>Total</span><span className="text-amber-400">{formatPKR(cart.total)}</span>
+          <span>Total</span><span className="text-lime-400">{formatPKR(cart.total)}</span>
         </div>
 
         <div className="flex gap-2">
@@ -48,9 +48,9 @@ export default function PosCart({
               <input
                 type="number" min="0" inputMode="decimal" placeholder="Cash received"
                 value={tendered} onChange={(e) => setTendered(e.target.value)}
-                className="min-w-0 flex-1 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                className="min-w-0 flex-1 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm focus:border-lime-500 focus:outline-none"
               />
-              <button onClick={() => setTendered(String(cart.total))} className="rounded-lg border border-neutral-700 px-3 text-sm hover:border-amber-500">Exact</button>
+              <button onClick={() => setTendered(String(cart.total))} className="rounded-lg border border-neutral-700 px-3 text-sm hover:border-lime-500">Exact</button>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-neutral-400">Change due</span>
@@ -63,7 +63,7 @@ export default function PosCart({
 
         <button
           onClick={onComplete} disabled={!canComplete}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 py-3 font-semibold text-black hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-lime-500 py-3 font-semibold text-black hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />} Complete Sale
         </button>

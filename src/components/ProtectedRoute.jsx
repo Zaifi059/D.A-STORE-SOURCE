@@ -26,8 +26,8 @@ export default function ProtectedRoute({ roles, children }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-400" aria-label="Loading" />
+      <div className="flex min-h-screen items-center justify-center bg-midnight">
+        <Loader2 className="h-8 w-8 animate-spin text-lime-500" aria-label="Loading" />
       </div>
     );
   }

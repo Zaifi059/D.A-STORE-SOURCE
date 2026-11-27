@@ -115,11 +115,11 @@ export default function PosPage() {
         {/* Left: scanner + products */}
         <section className="flex min-h-0 flex-col gap-3 p-3">
           <form onSubmit={onScan} className="relative">
-            <ScanLine className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-amber-400" />
+            <ScanLine className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-lime-400" />
             <input
               ref={scanRef} value={code} onChange={(e) => setCode(e.target.value)}
               placeholder="Scan barcode and press Enter…" autoComplete="off"
-              className="w-full rounded-lg border border-neutral-700 bg-neutral-900 py-3 pl-11 pr-4 focus:border-amber-500 focus:outline-none"
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-900 py-3 pl-11 pr-4 focus:border-lime-500 focus:outline-none"
             />
           </form>
           {flash && (
@@ -133,7 +133,7 @@ export default function PosPage() {
               <button
                 key={c} onClick={() => setCategory(c)}
                 className={`shrink-0 rounded-full border px-4 py-1 text-sm ${
-                  category === c ? 'border-amber-500 bg-amber-500 font-semibold text-black' : 'border-neutral-700 hover:border-amber-500'
+                  category === c ? 'border-lime-500 bg-lime-500 font-semibold text-black' : 'border-neutral-700 hover:border-lime-500'
                 }`}
               >
                 {c}
@@ -143,13 +143,13 @@ export default function PosPage() {
 
           <div className="min-h-0 flex-1 overflow-y-auto">
             {loading ? (
-              <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-amber-400" /></div>
+              <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-lime-400" /></div>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
                 {visible.map((p) => (
                   <button
                     key={p.id} onClick={() => addToCart(p)} disabled={p.stock_count <= 0}
-                    className="relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 text-left transition hover:border-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 text-left transition hover:border-lime-500 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <div className="aspect-square bg-neutral-800">
                       {p.image_url
@@ -159,7 +159,7 @@ export default function PosPage() {
                     <StockBadge stock={p.stock_count} className="absolute left-1.5 top-1.5" />
                     <div className="p-2">
                       <p className="truncate text-sm">{p.name}</p>
-                      <p className="text-sm font-semibold text-amber-400">{formatPKR(p.price)}</p>
+                      <p className="text-sm font-semibold text-lime-400">{formatPKR(p.price)}</p>
                     </div>
                   </button>
                 ))}
@@ -186,10 +186,10 @@ export default function PosPage() {
             </div>
             <Receipt sale={receipt} />
             <div className="flex gap-2">
-              <button onClick={() => window.print()} className="flex flex-1 items-center justify-center gap-2 rounded-full bg-amber-500 py-2.5 font-semibold text-black hover:bg-amber-400">
+              <button onClick={() => window.print()} className="flex flex-1 items-center justify-center gap-2 rounded-full bg-lime-500 py-2.5 font-semibold text-black hover:bg-lime-400">
                 <Printer className="h-4 w-4" /> Print Receipt
               </button>
-              <button onClick={closeReceipt} className="flex-1 rounded-full border border-neutral-600 py-2.5 hover:border-amber-500">New Sale</button>
+              <button onClick={closeReceipt} className="flex-1 rounded-full border border-neutral-600 py-2.5 hover:border-lime-500">New Sale</button>
             </div>
           </div>
         </div>

@@ -69,12 +69,12 @@ export default function VirtualTryOnModal({ product, onClose, onAddToCart }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Virtual try-on">
       <div className="absolute inset-0 bg-black/80" onClick={busy ? undefined : onClose} />
-      <div className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-amber-500/30 bg-neutral-950 p-5 shadow-2xl">
+      <div className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-lime-500/30 bg-neutral-950 p-5 shadow-2xl">
         <button onClick={onClose} disabled={busy} className="absolute right-4 top-4 disabled:opacity-30" aria-label="Close">
           <X className="h-6 w-6" />
         </button>
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Sparkles className="h-5 w-5 text-amber-400" /> Virtual Try-On
+          <Sparkles className="h-5 w-5 text-lime-400" /> Virtual Try-On
         </h2>
         <p className="mt-1 text-sm text-neutral-400">{product.name}</p>
 
@@ -86,28 +86,28 @@ export default function VirtualTryOnModal({ product, onClose, onAddToCart }) {
                 <button
                   onClick={() => { onAddToCart(); onClose(); }}
                   disabled={product.stock_count <= 0}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-amber-500 py-3 font-semibold text-black hover:bg-amber-400 disabled:opacity-40"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-lime-500 py-3 font-semibold text-black hover:bg-lime-400 disabled:opacity-40"
                 >
                   <ShoppingBag className="h-4 w-4" /> Add to Cart
                 </button>
-                <button onClick={reset} className="rounded-full border border-neutral-700 px-5 py-3 text-sm hover:border-amber-500">
+                <button onClick={reset} className="rounded-full border border-neutral-700 px-5 py-3 text-sm hover:border-lime-500">
                   Try another photo
                 </button>
               </div>
             </div>
           ) : busy ? (
             <div className="flex flex-col items-center gap-4 py-16 text-center">
-              <Loader2 className="h-10 w-10 animate-spin text-amber-400" />
+              <Loader2 className="h-10 w-10 animate-spin text-lime-400" />
               <p>{status === 'uploading' ? 'Uploading your photo…' : 'Generating your look… this can take up to a minute.'}</p>
             </div>
           ) : (
             <div className="space-y-4">
-              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-neutral-700 p-4 text-center hover:border-amber-500">
+              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-neutral-700 p-4 text-center hover:border-lime-500">
                 {preview ? (
                   <img src={preview} alt="Your photo" className="max-h-64 rounded" />
                 ) : (
                   <>
-                    <ImagePlus className="h-10 w-10 text-amber-400" />
+                    <ImagePlus className="h-10 w-10 text-lime-400" />
                     <span className="text-sm">Upload a full-body photo (JPG, PNG or WebP, up to 10 MB)</span>
                   </>
                 )}
@@ -123,7 +123,7 @@ export default function VirtualTryOnModal({ product, onClose, onAddToCart }) {
               <button
                 onClick={generate}
                 disabled={!file || !product.image_url}
-                className="w-full rounded-full bg-amber-500 py-3 font-semibold text-black hover:bg-amber-400 disabled:opacity-40"
+                className="w-full rounded-full bg-lime-500 py-3 font-semibold text-black hover:bg-lime-400 disabled:opacity-40"
               >
                 Generate Try-On
               </button>

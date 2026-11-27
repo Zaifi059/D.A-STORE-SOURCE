@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Loader2, Shirt } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { formatPKR } from '../lib/format';
+import { inputCls, labelCls, primaryBtnCls } from '../lib/ui';
 
 const PAYMENT_OPTIONS = [
   { value: 'cod', label: 'Cash on Delivery' },
   { value: 'bank_transfer', label: 'Bank Transfer' },
   { value: 'mobile_wallet', label: 'Mobile Wallet' },
 ];
-
-const inputCls =
-  'w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none';
 
 export default function CheckoutPage() {
   const { user, profile } = useAuth();
@@ -62,76 +61,120 @@ export default function CheckoutPage() {
 
   if (order) {
     return (
-      <div className="mx-auto max-w-md space-y-4 py-16 text-center">
-        <CheckCircle2 className="mx-auto h-16 w-16 text-amber-400" />
-        <h1 className="font-serif text-2xl font-bold">Order placed!</h1>
-        <p className="text-neutral-300">
-          Order <span className="font-semibold text-amber-400">#{order.order_number}</span> — total{' '}
-          <span className="font-semibold text-amber-400">{formatPKR(order.total_amount)}</span>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-auto max-w-md space-y-5 py-16 text-center"
+      >
+        <CheckCircle2 className="mx-auto h-16 w-16 text-lime-400" />
+        <h1 className="font-display text-4xl font-bold">Order placed</h1>
+        <p className="text-soft/70">
+          Order <span className="font-semibold text-lime-400">#{order.order_number}</span> — total{' '}
+          <span className="font-semibold text-lime-400">{formatPKR(order.total_amount)}</span>
         </p>
-        <p className="text-sm text-neutral-500">We'll confirm it shortly. Thank you for shopping at D.A STORE.</p>
-        <Link to="/" className="inline-block rounded-full bg-amber-500 px-6 py-2.5 font-semibold text-black hover:bg-amber-400">
+        <p className="text-sm text-soft/45">We'll confirm it shortly. Thank you for shopping at D.A STORE.</p>
+        <Link to="/shop" className="inline-block rounded-full bg-lime-500 px-6 py-3 font-semibold text-midnight shadow-lime transition hover:bg-lime-400">
           Continue shopping
         </Link>
-      </div>
+      </motion.div>
     );
   }
 
   if (items.length === 0) {
     return (
       <div className="py-24 text-center">
-        <p className="text-neutral-400">Your cart is empty.</p>
-        <Link to="/" className="mt-4 inline-block text-amber-400 hover:underline">Browse products</Link>
+        <p className="text-soft/50">Your cart is empty.</p>
+        <Link to="/shop" className="mt-4 inline-block text-lime-400 hover:underline">Browse products</Link>
       </div>
     );
   }
 
-  return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      <form onSubmit={submit} className="space-y-4">
-        <h1 className="font-serif text-2xl font-bold">Checkout</h1>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <input required placeholder="Full name" value={form.name} onChange={set('name')} className={inputCls} />
-          <input required type="tel" placeholder="Phone (e.g. 0300 1234567)" value={form.phone} onChange={set('phone')} className={inputCls} />
-        </div>
-        <input required placeholder="Delivery address" value={form.address} onChange={set('address')} className={inputCls} />
-        <input required placeholder="City" value={form.city} onChange={set('city')} className={inputCls} />
-        <textarea placeholder="Order notes (optional)" rows={3} value={form.notes} onChange={set('notes')} className={inputCls} />
-
-        <fieldset className="space-y-2">
-          <legend className="mb-1 text-sm text-neutral-400">Payment method</legend>
-          {PAYMENT_OPTIONS.map((p) => (
-            <label key={p.value} className="flex cursor-pointer items-center gap-3 rounded-lg border border-neutral-800 px-3 py-2 text-sm has-[:checked]:border-amber-500">
-              <input type="radio" name="payment" value={p.value} checked={form.payment === p.value} onChange={set('payment')} className="accent-amber-500" />
-              {p.label}
-            </label>
-          ))}
-        </fieldset>
-
-        {error && <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 py-3 font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
-        >
-          {busy && <Loader2 className="h-4 w-4 animate-spin" />} Place Order · {formatPKR(subtotal)}
-        </button>
-      </form>
-
-      <aside className="h-fit space-y-3 rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-        <h2 className="font-semibold">Order summary</h2>
+  const summary = (
+    <div className="space-y-4">
+      <h2 className="font-display text-2xl font-bold">Order summary</h2>
+      <ul className="space-y-3">
         {items.map((i) => (
-          <div key={i.id} className="flex justify-between gap-3 text-sm">
-            <span className="truncate text-neutral-300">{i.name} × {i.quantity}</span>
-            <span>{formatPKR(i.price * i.quantity)}</span>
-          </div>
+          <li key={i.id} className="flex items-center gap-3">
+            <div className="h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-teal/30">
+              {i.image_url ? (
+                <img src={i.image_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full items-center justify-center"><Shirt className="h-4 w-4 text-soft/20" /></div>
+              )}
+            </div>
+            <span className="min-w-0 flex-1 truncate text-sm text-soft/80">{i.name} × {i.quantity}</span>
+            <span className="text-sm">{formatPKR(i.price * i.quantity)}</span>
+          </li>
         ))}
-        <div className="flex justify-between border-t border-neutral-800 pt-3 font-semibold">
-          <span>Total</span>
-          <span className="text-amber-400">{formatPKR(subtotal)}</span>
+      </ul>
+      <div className="flex justify-between border-t border-white/10 pt-4 font-semibold">
+        <span>Total</span>
+        <span className="font-display text-lg text-lime-400">{formatPKR(subtotal)}</span>
+      </div>
+      <p className="text-xs text-soft/40">Final prices and stock are confirmed by the store when you place the order.</p>
+    </div>
+  );
+
+  return (
+    <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
+      <div>
+        <h1 className="mb-8 font-display text-4xl font-bold sm:text-5xl">Checkout</h1>
+
+        {/* Summary first on small screens so the total is visible before paying. */}
+        <div className="mb-8 rounded-3xl border border-white/10 bg-teal-deep/40 p-5 lg:hidden">
+          {summary}
         </div>
-        <p className="text-xs text-neutral-500">Final prices and stock are confirmed by the store when you place the order.</p>
+
+        <form onSubmit={submit} className="space-y-6">
+          <fieldset className="grid gap-5 sm:grid-cols-2">
+            <legend className="sr-only">Delivery details</legend>
+            <div>
+              <label htmlFor="co-name" className={labelCls}>Full name</label>
+              <input id="co-name" required autoComplete="name" value={form.name} onChange={set('name')} className={inputCls} />
+            </div>
+            <div>
+              <label htmlFor="co-phone" className={labelCls}>Phone</label>
+              <input id="co-phone" required type="tel" autoComplete="tel" placeholder="0300 1234567" value={form.phone} onChange={set('phone')} className={inputCls} />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="co-address" className={labelCls}>Delivery address</label>
+              <input id="co-address" required autoComplete="street-address" value={form.address} onChange={set('address')} className={inputCls} />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="co-city" className={labelCls}>City</label>
+              <input id="co-city" required autoComplete="address-level2" value={form.city} onChange={set('city')} className={inputCls} />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="co-notes" className={labelCls}>Order notes (optional)</label>
+              <textarea id="co-notes" rows={3} value={form.notes} onChange={set('notes')} className={inputCls} />
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-3">
+            <legend className={labelCls}>Payment method</legend>
+            {PAYMENT_OPTIONS.map((p) => (
+              <label
+                key={p.value}
+                className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 text-sm transition ${
+                  form.payment === p.value ? 'border-lime-500/70 bg-lime-500/10' : 'border-white/10 hover:border-white/25'
+                }`}
+              >
+                <input type="radio" name="payment" value={p.value} checked={form.payment === p.value} onChange={set('payment')} className="accent-lime-500" />
+                {p.label}
+              </label>
+            ))}
+          </fieldset>
+
+          {error && <p role="alert" className="rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-300">{error}</p>}
+
+          <button type="submit" disabled={busy} className={primaryBtnCls}>
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />} Place order · {formatPKR(subtotal)}
+          </button>
+        </form>
+      </div>
+
+      <aside className="hidden h-fit space-y-4 rounded-3xl border border-white/10 bg-teal-deep/40 p-6 lg:sticky lg:top-28 lg:block">
+        {summary}
       </aside>
     </div>
   );

@@ -50,7 +50,7 @@ export default function OrdersTable() {
     if (err) { setOrders(previous); setError(err.message); }
   };
 
-  if (loading) return <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-amber-400" /></div>;
+  if (loading) return <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-lime-400" /></div>;
 
   return (
     <section className="space-y-4">
@@ -59,7 +59,7 @@ export default function OrdersTable() {
           <button
             key={key} onClick={() => setTab(key)}
             className={`rounded-full border px-4 py-1.5 text-sm ${
-              tab === key ? 'border-amber-500 bg-amber-500 font-semibold text-black' : 'border-neutral-700 hover:border-amber-500'
+              tab === key ? 'border-lime-500 bg-lime-500 font-semibold text-black' : 'border-neutral-700 hover:border-lime-500'
             }`}
           >
             {label} ({counts[key]})
@@ -88,7 +88,7 @@ export default function OrdersTable() {
                         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                       </button>
                     </td>
-                    <td className="p-3 font-semibold text-amber-400">#{o.order_number}</td>
+                    <td className="p-3 font-semibold text-lime-400">#{o.order_number}</td>
                     <td className="p-3 text-neutral-300">{new Date(o.created_at).toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}</td>
                     <td className="p-3">
                       <span className={`rounded px-2 py-0.5 text-xs font-semibold uppercase ${o.channel === 'pos' ? 'bg-blue-500/20 text-blue-300' : 'bg-purple-500/20 text-purple-300'}`}>
@@ -101,7 +101,7 @@ export default function OrdersTable() {
                     <td className="p-3">
                       <select
                         value={o.status} onChange={(e) => updateStatus(o.id, e.target.value)}
-                        className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs capitalize focus:border-amber-500 focus:outline-none"
+                        className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs capitalize focus:border-lime-500 focus:outline-none"
                         aria-label={`Status for order ${o.order_number}`}
                       >
                         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}

@@ -1,21 +1,33 @@
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductGrid from './components/ProductGrid';
-import ProductDetail from './pages/ProductDetail';
-import CheckoutPage from './pages/CheckoutPage';
-import LoginPage from './pages/LoginPage';
-import PosPage from './pages/PosPage';
-import AdminPage from './pages/AdminPage';
+import PageLoader from './components/PageLoader';
+import Hero from './components/Hero';
+import CollectionsPage from './pages/CollectionsPage';
+
+// Route-level code splitting: these pages load only when visited.
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const PosPage = lazy(() => import('./pages/PosPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 function Layout() {
+  const { pathname } = useLocation();
   return (
-    <div className="flex min-h-screen flex-col bg-neutral-950 text-neutral-100">
+    <div className="showroom-bg flex min-h-screen flex-col text-soft">
       <Navbar />
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
-        <Outlet />
+      <main key={pathname} className="page-enter mx-auto w-full max-w-7xl flex-1 px-4 pb-16 pt-28 sm:px-6">
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
       <CartDrawer />
@@ -23,11 +35,26 @@ function Layout() {
   );
 }
 
+function Home() {
+  return (
+    <>
+      <Hero />
+      <ProductGrid title="The Collection" />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<ProductGrid />} />
+        <Route index element={<Home />} />
+        <Route path="shop" element={<ProductGrid title="Shop" />} />
+        <Route path="new-arrivals" element={<ProductGrid title="New Arrivals" sortBy="newest" />} />
+        <Route path="collections" element={<CollectionsPage />} />
+        <Route path="favorites" element={<FavoritesPage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
@@ -36,8 +63,8 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/pos" element={<PosPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/pos" element={<Suspense fallback={<PageLoader />}><PosPage /></Suspense>} />
+        <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

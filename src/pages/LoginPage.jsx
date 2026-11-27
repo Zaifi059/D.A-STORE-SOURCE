@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
-const inputCls =
-  'w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none';
+import { inputCls, labelCls, primaryBtnCls } from '../lib/ui';
 
 export default function LoginPage() {
   const { user, signIn, signUp } = useAuth();
@@ -44,36 +42,54 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-sm py-10">
-      <h1 className="mb-6 text-center font-serif text-2xl font-bold">
+    <div className="mx-auto max-w-sm py-8">
+      <p className="mb-3 text-center text-xs uppercase tracking-[0.4em] text-lime-400">Account</p>
+      <h1 className="mb-8 text-center font-display text-4xl font-bold">
         {mode === 'login' ? 'Welcome back' : 'Create your account'}
       </h1>
-      <form onSubmit={submit} className="space-y-3">
+      <form onSubmit={submit} className="space-y-4 rounded-3xl border border-white/10 bg-teal-deep/30 p-6">
         {mode === 'signup' && (
           <>
-            <input required placeholder="Full name" value={form.fullName} onChange={set('fullName')} className={inputCls} />
-            <input type="tel" placeholder="Phone" value={form.phone} onChange={set('phone')} className={inputCls} />
+            <div>
+              <label htmlFor="l-name" className={labelCls}>Full name</label>
+              <input id="l-name" required autoComplete="name" value={form.fullName} onChange={set('fullName')} className={inputCls} />
+            </div>
+            <div>
+              <label htmlFor="l-phone" className={labelCls}>Phone</label>
+              <input id="l-phone" type="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} className={inputCls} />
+            </div>
           </>
         )}
-        <input required type="email" placeholder="Email" value={form.email} onChange={set('email')} className={inputCls} />
-        <input required type="password" minLength={6} placeholder="Password" value={form.password} onChange={set('password')} className={inputCls} />
+        <div>
+          <label htmlFor="l-email" className={labelCls}>Email</label>
+          <input id="l-email" required type="email" autoComplete="email" value={form.email} onChange={set('email')} className={inputCls} />
+        </div>
+        <div>
+          <label htmlFor="l-password" className={labelCls}>Password</label>
+          <input
+            id="l-password"
+            required
+            type="password"
+            minLength={6}
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            value={form.password}
+            onChange={set('password')}
+            className={inputCls}
+          />
+        </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        {info && <p className="text-sm text-amber-400">{info}</p>}
+        {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
+        {info && <p role="status" className="text-sm text-lime-400">{info}</p>}
 
-        <button
-          type="submit"
-          disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 py-2.5 font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
-        >
+        <button type="submit" disabled={busy} className={primaryBtnCls}>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />} {mode === 'login' ? 'Login' : 'Sign up'}
         </button>
       </form>
       <button
         onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setInfo(''); }}
-        className="mt-4 w-full text-center text-sm text-neutral-400 hover:text-amber-400"
+        className="mt-5 w-full text-center text-sm text-soft/50 transition hover:text-lime-400"
       >
-        {mode === 'login' ? "New here? Create an account" : 'Already have an account? Login'}
+        {mode === 'login' ? 'New here? Create an account' : 'Already have an account? Login'}
       </button>
     </div>
   );

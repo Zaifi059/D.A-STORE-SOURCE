@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-/** All active products, kept live via Realtime. */
+/** All active products, kept live via Realtime. Each instance gets its own channel so multiple components can share the hook on one page. */
 export function useProducts() {
+  const instance = useId();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,7 +24,7 @@ export function useProducts() {
       });
 
     const channel = supabase
-      .channel('products')
+      .channel(`products-${instance}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, (payload) => {
         setProducts((prev) => {
           if (payload.eventType === 'DELETE') return prev.filter((p) => p.id !== payload.old.id);
@@ -40,7 +41,7 @@ export function useProducts() {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [instance]);
 
   return { products, loading, error };
 }

@@ -28,10 +28,10 @@ function StockAdjuster({ product }) {
       <div className="flex items-center gap-1">
         <input
           type="number" value={delta} onChange={(e) => setDelta(e.target.value)} placeholder="±"
-          className="w-16 rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs focus:border-amber-500 focus:outline-none"
+          className="w-16 rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs focus:border-lime-500 focus:outline-none"
           aria-label={`Adjust stock for ${product.name}`}
         />
-        <button onClick={apply} disabled={busy || !parseInt(delta, 10)} className="rounded bg-neutral-800 px-2 py-1 text-xs hover:bg-amber-500 hover:text-black disabled:opacity-40">
+        <button onClick={apply} disabled={busy || !parseInt(delta, 10)} className="rounded bg-neutral-800 px-2 py-1 text-xs hover:bg-lime-500 hover:text-black disabled:opacity-40">
           {busy ? '…' : 'Adjust'}
         </button>
       </div>
@@ -67,14 +67,14 @@ export default function ProductManager({ products, loading, lowOnly, setLowOnly 
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
           <input
             value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, SKU, barcode…"
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-900 py-2 pl-9 pr-3 text-sm focus:border-amber-500 focus:outline-none"
+            className="w-full rounded-lg border border-neutral-700 bg-neutral-900 py-2 pl-9 pr-3 text-sm focus:border-lime-500 focus:outline-none"
           />
         </div>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={lowOnly} onChange={(e) => setLowOnly(e.target.checked)} className="accent-amber-500" />
+          <input type="checkbox" checked={lowOnly} onChange={(e) => setLowOnly(e.target.checked)} className="accent-lime-500" />
           Low stock only
         </label>
-        <button onClick={() => setEditing('new')} className="flex items-center gap-1.5 rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black hover:bg-amber-400">
+        <button onClick={() => setEditing('new')} className="flex items-center gap-1.5 rounded-full bg-lime-500 px-4 py-2 text-sm font-semibold text-black hover:bg-lime-400">
           <Plus className="h-4 w-4" /> Add product
         </button>
       </div>
@@ -82,7 +82,7 @@ export default function ProductManager({ products, loading, lowOnly, setLowOnly 
       {actionError && <p className="text-sm text-red-400">{actionError}</p>}
 
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-amber-400" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-lime-400" /></div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-neutral-800">
           <table className="w-full min-w-[760px] text-left text-sm">
@@ -110,15 +110,15 @@ export default function ProductManager({ products, loading, lowOnly, setLowOnly 
                   </td>
                   <td className="p-3 text-neutral-300">{p.category || '—'}</td>
                   <td className="p-3">{formatPKR(p.price)}</td>
-                  <td className={`p-3 font-semibold ${p.stock_count === 0 ? 'text-red-400' : p.stock_count <= LOW_STOCK_THRESHOLD ? 'text-amber-400' : ''}`}>
+                  <td className={`p-3 font-semibold ${p.stock_count === 0 ? 'text-red-400' : p.stock_count <= LOW_STOCK_THRESHOLD ? 'text-lime-400' : ''}`}>
                     {p.stock_count}
                   </td>
                   <td className="p-3"><StockAdjuster product={p} /></td>
                   <td className="p-3">
-                    <input type="checkbox" checked={p.is_active} onChange={() => toggleActive(p)} className="accent-amber-500" aria-label={`Toggle ${p.name} active`} />
+                    <input type="checkbox" checked={p.is_active} onChange={() => toggleActive(p)} className="accent-lime-500" aria-label={`Toggle ${p.name} active`} />
                   </td>
                   <td className="p-3 text-right">
-                    <button onClick={() => setEditing(p)} className="rounded-full border border-neutral-700 p-2 hover:border-amber-500" aria-label={`Edit ${p.name}`}>
+                    <button onClick={() => setEditing(p)} className="rounded-full border border-neutral-700 p-2 hover:border-lime-500" aria-label={`Edit ${p.name}`}>
                       <Pencil className="h-4 w-4" />
                     </button>
                   </td>
