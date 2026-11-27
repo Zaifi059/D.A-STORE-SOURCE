@@ -1,15 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
+import { supabaseAnonKey, supabaseUrl, isSupabaseConfigured } from './config';
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!url || !anonKey) {
-  throw new Error(
-    'Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY. Add them to your .env file (or Netlify environment variables) and rebuild.'
-  );
+// main.jsx only imports the app when this is true, so the client is never built without config.
+if (!isSupabaseConfigured) {
+  throw new Error('Supabase is not configured. See src/components/SetupRequired.jsx.');
 }
 
-export const supabase = createClient(url, anonKey, {
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
