@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Loader2, Pencil, Plus, Search, Shirt } from 'lucide-react';
+import { Layers, Loader2, Pencil, Plus, Search, Shirt } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { formatPKR } from '../../lib/format';
 import { LOW_STOCK_THRESHOLD } from '../StockBadge';
 import ProductForm from './ProductForm';
+import VariantsDialog from './VariantsDialog';
+import { activeVariants, hasVariants } from '../../lib/pricing';
 
 function StockAdjuster({ product }) {
   const [delta, setDelta] = useState('');
@@ -42,6 +44,7 @@ function StockAdjuster({ product }) {
 
 export default function ProductManager({ products, loading, lowOnly, setLowOnly }) {
   const [editing, setEditing] = useState(null); // null | 'new' | product
+  const [variantsFor, setVariantsFor] = useState(null);
   const [q, setQ] = useState('');
   const [actionError, setActionError] = useState('');
 
@@ -113,11 +116,18 @@ export default function ProductManager({ products, loading, lowOnly, setLowOnly 
                   <td className={`p-3 font-semibold ${p.stock_count === 0 ? 'text-red-400' : p.stock_count <= LOW_STOCK_THRESHOLD ? 'text-lime-400' : ''}`}>
                     {p.stock_count}
                   </td>
-                  <td className="p-3"><StockAdjuster product={p} /></td>
+                  <td className="p-3">
+                    {hasVariants(p)
+                      ? <p className="max-w-[12rem] text-xs text-neutral-500">Managed per size/color ({activeVariants(p).length} active)</p>
+                      : <StockAdjuster product={p} />}
+                  </td>
                   <td className="p-3">
                     <input type="checkbox" checked={p.is_active} onChange={() => toggleActive(p)} className="accent-lime-500" aria-label={`Toggle ${p.name} active`} />
                   </td>
                   <td className="p-3 text-right">
+                    <button onClick={() => setVariantsFor(p)} className="mr-2 rounded-full border border-neutral-700 p-2 hover:border-lime-500" aria-label={`Variants and pricing for ${p.name}`}>
+                      <Layers className="h-4 w-4" />
+                    </button>
                     <button onClick={() => setEditing(p)} className="rounded-full border border-neutral-700 p-2 hover:border-lime-500" aria-label={`Edit ${p.name}`}>
                       <Pencil className="h-4 w-4" />
                     </button>
@@ -134,6 +144,10 @@ export default function ProductManager({ products, loading, lowOnly, setLowOnly 
 
       {editing && (
         <ProductForm product={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />
+      )}
+
+      {variantsFor && (
+        <VariantsDialog product={variantsFor} onClose={() => setVariantsFor(null)} />
       )}
     </section>
   );

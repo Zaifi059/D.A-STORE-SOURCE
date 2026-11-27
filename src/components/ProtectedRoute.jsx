@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export const ROUTE_ROLES = {
   '/pos': ['cashier', 'admin'],
   '/admin': ['admin'],
+  '/payments': ['cashier', 'admin'],
 };
 
 function rolesForPath(pathname) {

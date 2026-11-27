@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Eye, Shirt } from 'lucide-react';
 import { formatPKR } from '../lib/format';
+import { isOnSale, regularPriceFor, unitPriceFor } from '../lib/pricing';
 import StockBadge from './StockBadge';
 import WishlistButton from './WishlistButton';
 import QuickViewModal from './QuickViewModal';
@@ -33,6 +34,11 @@ function ProductCard({ product }) {
           )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-midnight/80 to-transparent" />
           <StockBadge stock={product.stock_count} className="pointer-events-none absolute left-3 top-3" />
+          {!soldOut && (isOnSale(product) || product.is_new) && (
+            <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-lime-500 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-midnight">
+              {isOnSale(product) ? 'Sale' : 'New'}
+            </span>
+          )}
 
           <WishlistButton productId={product.id} className="absolute right-3 top-3 z-10" />
 
@@ -47,7 +53,10 @@ function ProductCard({ product }) {
 
         <Link to={to} className="block p-3.5">
           <p className="truncate text-sm text-soft/85">{product.name}</p>
-          <p className="mt-1 font-semibold text-lime-400">{formatPKR(product.price)}</p>
+          <p className="mt-1 flex items-center gap-2">
+            <span className="font-semibold text-lime-400">{formatPKR(unitPriceFor(product))}</span>
+            {isOnSale(product) && <span className="text-xs text-soft/40 line-through">{formatPKR(regularPriceFor(product))}</span>}
+          </p>
         </Link>
       </article>
 

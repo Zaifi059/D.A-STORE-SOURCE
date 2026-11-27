@@ -53,6 +53,7 @@ export default function CartDrawer() {
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <p className="truncate text-sm">{i.name}</p>
+                  {i.size && <p className="truncate text-xs text-soft/50">{i.size} / {i.color}</p>}
                   <p className="text-sm font-semibold text-lime-400">{formatPKR(i.price)}</p>
                   <div className="mt-auto flex items-center justify-between">
                     <div className="flex items-center gap-2 rounded-full border border-white/10 px-2 py-1">

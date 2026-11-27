@@ -47,7 +47,7 @@ export default function CheckoutPage() {
           city: form.city.trim(),
           notes: form.notes.trim(),
         },
-        p_items: items.map((i) => ({ product_id: i.id, quantity: i.quantity })),
+        p_items: items.map((i) => ({ product_id: i.product_id, variant_id: i.variant_id, quantity: i.quantity })),
       });
       if (rpcError) throw rpcError;
       setOrder(data);
@@ -102,7 +102,7 @@ export default function CheckoutPage() {
                 <div className="flex h-full items-center justify-center"><Shirt className="h-4 w-4 text-soft/20" /></div>
               )}
             </div>
-            <span className="min-w-0 flex-1 truncate text-sm text-soft/80">{i.name} × {i.quantity}</span>
+            <span className="min-w-0 flex-1 truncate text-sm text-soft/80">{i.name}{i.size && ` · ${i.size} / ${i.color}`} × {i.quantity}</span>
             <span className="text-sm">{formatPKR(i.price * i.quantity)}</span>
           </li>
         ))}

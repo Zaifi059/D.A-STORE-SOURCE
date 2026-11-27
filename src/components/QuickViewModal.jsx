@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Minus, Plus, Shirt, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPKR } from '../lib/format';
+import { hasVariants, isOnSale, regularPriceFor, unitPriceFor } from '../lib/pricing';
 import StockBadge from './StockBadge';
 import AddToCartButton from './AddToCartButton';
 import WishlistButton from './WishlistButton';
@@ -64,7 +65,8 @@ export default function QuickViewModal({ product, onClose }) {
 
           <h3 className="font-display text-3xl font-bold leading-tight">{product.name}</h3>
           <div className="flex items-center gap-3">
-            <p className="font-display text-2xl font-semibold text-lime-400">{formatPKR(product.price)}</p>
+            <p className="font-display text-2xl font-semibold text-lime-400">{formatPKR(unitPriceFor(product))}</p>
+            {isOnSale(product) && <p className="text-soft/40 line-through">{formatPKR(regularPriceFor(product))}</p>}
             <StockBadge stock={product.stock_count} />
           </div>
           {product.description && <p className="line-clamp-4 text-sm leading-relaxed text-soft/60">{product.description}</p>}
@@ -85,7 +87,11 @@ export default function QuickViewModal({ product, onClose }) {
           )}
 
           <div className="mt-auto flex flex-col gap-3">
-            <AddToCartButton disabled={soldOut} onAdd={() => addItem(product, safeQty)} className="w-full" />
+            {hasVariants(product) ? (
+              <p className="text-center text-sm text-soft/60">Choose a size and color on the product page.</p>
+            ) : (
+              <AddToCartButton disabled={soldOut} onAdd={() => addItem(product, safeQty)} className="w-full" />
+            )}
             <Link to={`/product/${product.id}`} onClick={onClose} className="text-center text-sm text-soft/60 underline-offset-4 hover:text-lime-400 hover:underline">
               View full details
             </Link>

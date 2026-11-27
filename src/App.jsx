@@ -18,6 +18,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PosPage = lazy(() => import('./pages/PosPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
+const PaymentsPage = lazy(() => import('./pages/PaymentsPage'));
 
 function Layout() {
   const { pathname } = useLocation();
@@ -65,6 +66,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/pos" element={<Suspense fallback={<PageLoader />}><PosPage /></Suspense>} />
         <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
+        <Route path="/payments" element={<Suspense fallback={<PageLoader />}><PaymentsPage /></Suspense>} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

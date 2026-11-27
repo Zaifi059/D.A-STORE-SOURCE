@@ -6,6 +6,7 @@ import AddToCartButton from './AddToCartButton';
 import { useProducts } from '../hooks/useProducts';
 import { useCart } from '../context/CartContext';
 import { formatPKR } from '../lib/format';
+import { hasVariants, isOnSale, regularPriceFor, unitPriceFor } from '../lib/pricing';
 import StockBadge from './StockBadge';
 
 /**
@@ -57,7 +58,8 @@ export default function Hero() {
           {spotlight.name}
         </h1>
         <div className="mt-6 flex items-center gap-4">
-          <p className="font-display text-3xl font-semibold text-lime-400">{formatPKR(spotlight.price)}</p>
+          <p className="font-display text-3xl font-semibold text-lime-400">{formatPKR(unitPriceFor(spotlight))}</p>
+          {isOnSale(spotlight) && <p className="text-soft/40 line-through">{formatPKR(regularPriceFor(spotlight))}</p>}
           <StockBadge stock={spotlight.stock_count} />
         </div>
         {spotlight.description && (
@@ -65,7 +67,13 @@ export default function Hero() {
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <AddToCartButton disabled={soldOut} onAdd={() => addItem(spotlight, 1)} />
+          {hasVariants(spotlight) ? (
+            <Link to={`/product/${spotlight.id}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-lime-500 px-7 py-3.5 font-semibold text-midnight shadow-lime transition hover:bg-lime-400">
+              Choose size &amp; color
+            </Link>
+          ) : (
+            <AddToCartButton disabled={soldOut} onAdd={() => addItem(spotlight, 1)} />
+          )}
           <Link
             to={`/product/${spotlight.id}`}
             className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition hover:border-lime-500/60 hover:text-lime-400"

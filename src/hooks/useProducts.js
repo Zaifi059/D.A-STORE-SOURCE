@@ -1,6 +1,15 @@
 import { useEffect, useId, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+// Products with their size/color variants in one query.
+export const PRODUCT_SELECT = '*, product_variants(id, size, color, sku, price_override, stock_count, is_active)';
+
+/**
+ * Realtime updates send the product row without its nested variants,
+ * so keep the variants we already loaded when a row changes.
+ */
+export const mergeRow = (prev, row) => ({ ...row, product_variants: prev?.product_variants ?? [] });
+
 /** All active products, kept live via Realtime. Each instance gets its own channel so multiple components can share the hook on one page. */
 export function useProducts() {
   const instance = useId();
@@ -13,7 +22,7 @@ export function useProducts() {
 
     supabase
       .from('products')
-      .select('*')
+      .select(PRODUCT_SELECT)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .then(({ data, error: err }) => {
@@ -30,9 +39,10 @@ export function useProducts() {
           if (payload.eventType === 'DELETE') return prev.filter((p) => p.id !== payload.old.id);
           const row = payload.new;
           if (!row.is_active) return prev.filter((p) => p.id !== row.id);
-          return prev.some((p) => p.id === row.id)
-            ? prev.map((p) => (p.id === row.id ? row : p))
-            : [row, ...prev];
+          const existing = prev.find((p) => p.id === row.id);
+          return existing
+            ? prev.map((p) => (p.id === row.id ? mergeRow(p, row) : p))
+            : [mergeRow(null, row), ...prev];
         });
       })
       .subscribe();
@@ -58,7 +68,7 @@ export function useProduct(id) {
 
     supabase
       .from('products')
-      .select('*')
+      .select(PRODUCT_SELECT)
       .eq('id', id)
       .eq('is_active', true)
       .maybeSingle()
@@ -74,7 +84,7 @@ export function useProduct(id) {
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'products', filter: `id=eq.${id}` },
-        (payload) => setProduct(payload.new.is_active ? payload.new : null)
+        (payload) => setProduct((prev) => (payload.new.is_active ? mergeRow(prev, payload.new) : null))
       )
       .subscribe();
 
@@ -98,7 +108,7 @@ export function useAllProducts() {
 
     supabase
       .from('products')
-      .select('*')
+      .select(PRODUCT_SELECT)
       .order('name')
       .then(({ data, error: err }) => {
         if (!active) return;
@@ -114,8 +124,8 @@ export function useAllProducts() {
           if (payload.eventType === 'DELETE') return prev.filter((p) => p.id !== payload.old.id);
           const row = payload.new;
           return prev.some((p) => p.id === row.id)
-            ? prev.map((p) => (p.id === row.id ? row : p))
-            : [...prev, row].sort((a, b) => a.name.localeCompare(b.name));
+            ? prev.map((p) => (p.id === row.id ? mergeRow(p, row) : p))
+            : [...prev, mergeRow(null, row)].sort((a, b) => a.name.localeCompare(b.name));
         });
       })
       .subscribe();

@@ -40,3 +40,36 @@ describe('CartContext', () => {
     expect(JSON.parse(localStorage.getItem('da-store-cart'))[0].id).toBe('p1');
   });
 });
+
+describe('CartContext variants', () => {
+  const tee = {
+    id: 'shirt', name: 'Oxford Shirt', price: 5000, sale_price: null, image_url: null, stock_count: 3,
+    product_variants: [
+      { id: 'va', size: 'M', color: 'Black', stock_count: 2, price_override: null, is_active: true },
+      { id: 'vb', size: 'M', color: 'White', stock_count: 1, price_override: null, is_active: true },
+    ],
+  };
+
+  it('keeps each size/color as its own line with its own stock cap', () => {
+    const { result } = renderHook(() => useCart(), { wrapper });
+    act(() => result.current.addItem(tee, 1, tee.product_variants[0]));
+    act(() => result.current.addItem(tee, 5, tee.product_variants[0]));
+    act(() => result.current.addItem(tee, 1, tee.product_variants[1]));
+    expect(result.current.items).toHaveLength(2);
+    expect(result.current.items[0].quantity).toBe(2);
+    expect(result.current.items[0]).toMatchObject({ product_id: 'shirt', variant_id: 'va', size: 'M', color: 'Black' });
+    expect(result.current.items[1].quantity).toBe(1);
+  });
+
+  it('refuses to add a product with variants without a chosen variant', () => {
+    const { result } = renderHook(() => useCart(), { wrapper });
+    act(() => result.current.addItem(tee, 1));
+    expect(result.current.items).toHaveLength(0);
+  });
+
+  it('upgrades carts saved before variants existed', () => {
+    localStorage.setItem('da-store-cart', JSON.stringify([{ id: 'old', name: 'Old', price: 100, stock_count: 4, quantity: 1 }]));
+    const { result } = renderHook(() => useCart(), { wrapper });
+    expect(result.current.items[0]).toMatchObject({ product_id: 'old', variant_id: null, size: null });
+  });
+});
