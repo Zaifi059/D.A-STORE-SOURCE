@@ -3,6 +3,7 @@
 <img src="https://img.shields.io/badge/D.A%20STORE-FASHION%20REDEFINED-111111?style=for-the-badge&labelColor=000000" alt="D.A STORE"/>
 
 # D.A STORE
+### dastorev2.netlify.app
 ### THE DIGITAL HOME OF MODERN MENSWEAR
 
 **Discover. Experience. Try on. Shop.**
