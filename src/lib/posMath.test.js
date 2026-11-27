@@ -52,6 +52,24 @@ describe('computeTotals', () => {
     expect(t.canComplete).toBe(false);
   });
 
+  it('blocks non-numeric and negative amounts received', () => {
+    expect(computeTotals({ lines, method: 'cash', tendered: 'invalid' }).paymentError)
+      .toMatch(/valid, non-negative/);
+    expect(computeTotals({ lines, method: 'cash', tendered: -1 }).canComplete).toBe(false);
+  });
+
+  it('blocks bank transfers above the payable total', () => {
+    const t = computeTotals({ lines, method: 'bank_transfer', tendered: 12000 });
+    expect(t.paymentError).toMatch(/cannot exceed/);
+    expect(t.canComplete).toBe(false);
+  });
+
+  it('blocks a non-numeric discount instead of treating it as zero', () => {
+    const t = computeTotals({ lines, discount: 'invalid', method: 'cash', tendered: 11498 });
+    expect(t.discountError).toMatch(/valid discount/);
+    expect(t.canComplete).toBe(false);
+  });
+
   it('blocks an empty cart', () => {
     expect(computeTotals({ lines: [], method: 'cash', tendered: 0 }).canComplete).toBe(false);
   });

@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { formatPKR } from '../../lib/format';
-import { inputCls, labelCls, primaryBtnCls } from '../../lib/ui';
 
+const inputCls = 'w-full rounded-lg border border-[#253244] bg-[#080D14] px-3 py-2 text-sm text-[#F5F7FA] outline-none placeholder:text-[#91A0B5] focus:border-[#FF7818]';
+const labelCls = 'mb-1.5 block text-xs uppercase tracking-wide text-[#91A0B5]';
+const primaryBtnCls = 'flex w-full items-center justify-center gap-2 rounded-lg bg-[#FF7818] py-3 font-semibold text-white transition hover:bg-[#FF9A45] disabled:cursor-not-allowed disabled:opacity-50';
 const newRequestId = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
 
 /**
@@ -56,7 +58,7 @@ export default function RecordPaymentForm({ customer, owes, onSaved }) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+    <form onSubmit={submit} className="space-y-3 rounded-xl border border-[#253244] bg-[#111A25] p-4">
       <h3 className="text-sm font-semibold">Record a payment for {customer.full_name}</h3>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
@@ -85,7 +87,7 @@ export default function RecordPaymentForm({ customer, owes, onSaved }) {
         <p className="text-xs text-amber-300">This is more than the customer owes. The extra {formatPKR(value - Number(owes))} is kept as advance credit.</p>
       )}
       {msg.text && (
-        <p role={msg.type === 'error' ? 'alert' : 'status'} className={`rounded-lg px-3 py-2 text-sm ${msg.type === 'ok' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
+        <p role={msg.type === 'error' ? 'alert' : 'status'} className={`rounded-lg px-3 py-2 text-sm ${msg.type === 'ok' ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300'}`}>
           {msg.text}
         </p>
       )}

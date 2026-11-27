@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 // Central RBAC map: path prefix -> allowed roles
 export const ROUTE_ROLES = {
+  '/dashboard': ['cashier', 'admin'],
   '/pos': ['cashier', 'admin'],
   '/admin': ['admin'],
   '/payments': ['cashier', 'admin'],
@@ -26,9 +27,10 @@ export default function ProtectedRoute({ roles, children }) {
   const location = useLocation();
 
   if (loading) {
+    const adminRoute = ['/dashboard', '/pos', '/admin', '/payments'].includes(location.pathname);
     return (
-      <div className="flex min-h-screen items-center justify-center bg-midnight">
-        <Loader2 className="h-8 w-8 animate-spin text-lime-500" aria-label="Loading" />
+      <div className={`flex min-h-screen items-center justify-center ${adminRoute ? 'bg-[#080D14]' : 'bg-midnight'}`}>
+        <Loader2 className={`h-8 w-8 animate-spin ${adminRoute ? 'text-[#FF9A45]' : 'text-lime-500'}`} aria-label="Loading" />
       </div>
     );
   }

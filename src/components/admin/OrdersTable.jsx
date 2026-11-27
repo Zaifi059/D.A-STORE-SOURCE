@@ -50,7 +50,7 @@ export default function OrdersTable() {
     if (err) { setOrders(previous); setError(err.message); }
   };
 
-  if (loading) return <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-lime-400" /></div>;
+  if (loading) return <div role="status" className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-[#FF9A45]" /></div>;
 
   return (
     <section className="space-y-4">
@@ -59,7 +59,7 @@ export default function OrdersTable() {
           <button
             key={key} onClick={() => setTab(key)}
             className={`rounded-full border px-4 py-1.5 text-sm ${
-              tab === key ? 'border-lime-500 bg-lime-500 font-semibold text-black' : 'border-neutral-700 hover:border-lime-500'
+              tab === key ? 'border-[#FF7818] bg-[#FF7818] font-semibold text-white' : 'border-[#253244] text-[#91A0B5] hover:border-[#FF7818]'
             }`}
           >
             {label} ({counts[key]})
@@ -68,28 +68,28 @@ export default function OrdersTable() {
       </div>
       {error && <p className="text-sm text-red-400">{error}</p>}
 
-      <div className="overflow-x-auto rounded-xl border border-neutral-800">
+      <div className="overflow-x-auto rounded-xl border border-[#253244] bg-[#111A25]">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="bg-neutral-900 text-xs uppercase tracking-wide text-neutral-400">
+          <thead className="bg-[#151F2B] text-xs uppercase tracking-wide text-[#91A0B5]">
             <tr>
               <th className="p-3" /><th className="p-3">Order</th><th className="p-3">Date</th><th className="p-3">Channel</th>
               <th className="p-3">Customer</th><th className="p-3">Payment</th><th className="p-3">Total</th><th className="p-3">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-800">
+          <tbody className="divide-y divide-[#253244]">
             {rows.map((o) => {
               const open = expanded === o.id;
               const info = o.customer_info ?? {};
               return (
                 <Fragment key={o.id}>
-                  <tr className="hover:bg-neutral-900/50">
+                  <tr className="transition hover:bg-[#151F2B]/70">
                     <td className="p-3">
                       <button onClick={() => setExpanded(open ? null : o.id)} aria-label="Toggle details">
                         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                       </button>
                     </td>
-                    <td className="p-3 font-semibold text-lime-400">#{o.order_number}</td>
-                    <td className="p-3 text-neutral-300">{new Date(o.created_at).toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                    <td className="p-3 font-semibold text-[#FF9A45]">#{o.order_number}</td>
+                    <td className="p-3 text-[#91A0B5]">{new Date(o.created_at).toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' })}</td>
                     <td className="p-3">
                       <span className={`rounded px-2 py-0.5 text-xs font-semibold uppercase ${o.channel === 'pos' ? 'bg-blue-500/20 text-blue-300' : 'bg-purple-500/20 text-purple-300'}`}>
                         {o.channel}
@@ -101,7 +101,7 @@ export default function OrdersTable() {
                     <td className="p-3">
                       <select
                         value={o.status} onChange={(e) => updateStatus(o.id, e.target.value)}
-                        className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs capitalize focus:border-lime-500 focus:outline-none"
+                        className="rounded border border-[#253244] bg-[#080D14] px-2 py-1 text-xs capitalize focus:border-[#FF7818] focus:outline-none"
                         aria-label={`Status for order ${o.order_number}`}
                       >
                         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -109,15 +109,15 @@ export default function OrdersTable() {
                     </td>
                   </tr>
                   {open && (
-                    <tr className="bg-neutral-900/60">
+                    <tr className="bg-[#151F2B]/70">
                       <td />
-                      <td colSpan={7} className="space-y-2 p-3 text-xs text-neutral-300">
+                      <td colSpan={7} className="space-y-2 p-3 text-xs text-[#F5F7FA]">
                         <ul className="space-y-0.5">
                           {o.order_items.map((it, idx) => (
                             <li key={idx}>{it.quantity} × {it.products?.name ?? 'Item'} @ {formatPKR(it.unit_price)}</li>
                           ))}
                         </ul>
-                        <p className="text-neutral-400">
+                        <p className="text-[#91A0B5]">
                           {[info.phone, info.email, info.address, info.city, info.cashier && `Cashier: ${info.cashier}`, info.notes && `Notes: ${info.notes}`]
                             .filter(Boolean).join(' · ') || 'No customer details'}
                         </p>
@@ -127,7 +127,7 @@ export default function OrdersTable() {
                 </Fragment>
               );
             })}
-            {rows.length === 0 && <tr><td colSpan={8} className="p-10 text-center text-neutral-500">No orders yet.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={8} className="p-10 text-center text-[#91A0B5]">No orders yet.</td></tr>}
           </tbody>
         </table>
       </div>

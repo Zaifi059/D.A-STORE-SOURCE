@@ -8,6 +8,7 @@ import ProductGrid from './components/ProductGrid';
 import PageLoader from './components/PageLoader';
 import Hero from './components/Hero';
 import CollectionsPage from './pages/CollectionsPage';
+import AdminShell from './components/admin/AdminShell';
 
 // Route-level code splitting: these pages load only when visited.
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
@@ -17,6 +18,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PosPage = lazy(() => import('./pages/PosPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage'));
 
@@ -64,9 +66,12 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/pos" element={<Suspense fallback={<PageLoader />}><PosPage /></Suspense>} />
-        <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
-        <Route path="/payments" element={<Suspense fallback={<PageLoader />}><PaymentsPage /></Suspense>} />
+        <Route element={<AdminShell />}>
+          <Route path="/dashboard" element={<Suspense fallback={<PageLoader admin />}><DashboardPage /></Suspense>} />
+          <Route path="/pos" element={<Suspense fallback={<PageLoader admin />}><PosPage /></Suspense>} />
+          <Route path="/admin" element={<Suspense fallback={<PageLoader admin />}><AdminPage /></Suspense>} />
+          <Route path="/payments" element={<Suspense fallback={<PageLoader admin />}><PaymentsPage /></Suspense>} />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

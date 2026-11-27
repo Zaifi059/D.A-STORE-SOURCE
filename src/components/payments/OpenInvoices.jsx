@@ -24,20 +24,20 @@ export default function OpenInvoices({ customerId, refreshKey }) {
   }, [customerId, refreshKey]);
 
   if (error) return <p className="text-sm text-red-400">{error}</p>;
-  if (rows === null) return <p className="text-sm text-neutral-500">Loading invoices…</p>;
-  if (rows.length === 0) return <p className="text-sm text-neutral-500">No open invoices.</p>;
+  if (rows === null) return <p role="status" className="text-sm text-[#91A0B5]">Loading invoices…</p>;
+  if (rows.length === 0) return <p className="text-sm text-[#91A0B5]">No open invoices.</p>;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-800">
+    <div className="overflow-x-auto rounded-xl border border-[#253244] bg-[#111A25]">
       <table className="w-full min-w-[480px] text-left text-sm">
-        <thead className="bg-neutral-950 text-xs uppercase tracking-wide text-neutral-400">
+        <thead className="bg-[#151F2B] text-xs uppercase tracking-wide text-[#91A0B5]">
           <tr><th className="p-2">Invoice</th><th className="p-2">Date</th><th className="p-2 text-right">Total</th><th className="p-2 text-right">Paid</th><th className="p-2 text-right">Balance</th></tr>
         </thead>
-        <tbody className="divide-y divide-neutral-800">
+        <tbody className="divide-y divide-[#253244]">
           {rows.map((r) => (
             <tr key={r.id}>
               <td className="p-2">#{r.order_number}</td>
-              <td className="p-2 text-neutral-400">{new Date(r.created_at).toLocaleDateString('en-PK')}</td>
+              <td className="p-2 text-[#91A0B5]">{new Date(r.created_at).toLocaleDateString('en-PK')}</td>
               <td className="p-2 text-right">{formatPKR(r.total_amount)}</td>
               <td className="p-2 text-right">{formatPKR(r.amount_paid)}</td>
               <td className="p-2 text-right font-semibold text-amber-300">{formatPKR(r.balance_due)}</td>

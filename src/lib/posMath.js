@@ -18,22 +18,39 @@ export const normalizePhone = (value) => String(value ?? '').replace(/\D/g, '');
  */
 export function computeTotals({ lines, discount = 0, method, tendered = '', creditAllowed = false }) {
   const subtotal = round2(lines.reduce((n, l) => n + Number(l.price) * l.quantity, 0));
-  const disc = round2(Number(discount) || 0);
-  const discountError =
-    disc < 0 ? 'Discount cannot be negative.' : disc > subtotal ? 'Discount cannot be more than the subtotal.' : '';
+  const discountValue = discount === '' || discount == null ? 0 : Number(discount);
+  const disc = round2(Number.isFinite(discountValue) ? discountValue : 0);
+  const discountError = !Number.isFinite(discountValue)
+    ? 'Enter a valid discount amount.'
+    : disc < 0
+      ? 'Discount cannot be negative.'
+      : disc > subtotal
+        ? 'Discount cannot be more than the subtotal.'
+        : '';
 
   const payable = round2(Math.max(0, subtotal - Math.max(0, disc)));
 
   const blank = tendered === '' || tendered == null;
+  const tenderedValue = blank ? null : Number(tendered);
+  const invalidTendered = !blank && (!Number.isFinite(tenderedValue) || tenderedValue < 0);
   const received = blank
     ? method === 'bank_transfer' ? payable : 0
-    : round2(Math.max(0, Number(tendered) || 0));
+    : round2(Number.isFinite(tenderedValue) ? tenderedValue : 0);
 
   const change = method === 'cash' ? Math.max(0, round2(received - payable)) : 0;
   const shortBy = Math.max(0, round2(payable - received));
+  const paymentError = invalidTendered
+    ? 'Amount received must be a valid, non-negative amount.'
+    : method === 'bank_transfer' && received > payable
+      ? 'Bank transfer cannot exceed the payable total.'
+      : '';
 
   // Any shortfall is a credit sale. It must be allowed for this customer.
   const shortfallOk = shortBy === 0 || creditAllowed;
+  const validLines = lines.length > 0 && lines.every((line) =>
+    Number.isFinite(Number(line.price)) && Number(line.price) >= 0 &&
+    Number.isInteger(Number(line.quantity)) && Number(line.quantity) > 0
+  );
 
   return {
     subtotal,
@@ -44,6 +61,7 @@ export function computeTotals({ lines, discount = 0, method, tendered = '', cred
     shortBy,
     onCredit: shortBy,
     discountError,
-    canComplete: lines.length > 0 && !discountError && shortfallOk,
+    paymentError,
+    canComplete: validLines && !discountError && !paymentError && shortfallOk,
   };
 }

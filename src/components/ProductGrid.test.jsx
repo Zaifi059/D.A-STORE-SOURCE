@@ -5,8 +5,16 @@ import { products } from '../test/fixtures';
 import { CartProvider } from '../context/CartContext';
 import { WishlistProvider } from '../context/WishlistContext';
 
+const { refreshProducts } = vi.hoisted(() => ({ refreshProducts: vi.fn() }));
+let productError = '';
+
 vi.mock('../hooks/useProducts', () => ({
-  useProducts: () => ({ products: fixtureList, loading: false, error: '' }),
+  useProducts: () => ({
+    products: fixtureList,
+    loading: false,
+    error: productError,
+    refresh: refreshProducts,
+  }),
 }));
 
 let fixtureList = products;
@@ -67,5 +75,16 @@ describe('ProductGrid', () => {
     fixtureList = products;
     renderAt('/shop?q=nothing-matches-this');
     expect(screen.getByText('No products found.')).toBeInTheDocument();
+  });
+
+  it('explains an expired session and lets the visitor retry loading products', () => {
+    productError = 'JWT expired';
+    refreshProducts.mockClear();
+    renderAt('/shop');
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/saved sign-in has expired/i);
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(refreshProducts).toHaveBeenCalledTimes(1);
+    productError = '';
   });
 });

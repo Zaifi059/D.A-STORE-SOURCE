@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import StaffHeader from '../components/StaffHeader';
 import CustomerPanel from '../components/pos/CustomerPanel';
 import SummaryCards from '../components/payments/SummaryCards';
 import OpenInvoices from '../components/payments/OpenInvoices';
@@ -22,31 +21,31 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <StaffHeader title="Payments & Credit" />
-      <main className="mx-auto grid max-w-[1400px] gap-6 p-4 lg:grid-cols-[360px_1fr]">
-        <aside className="space-y-3">
-          <h2 className="text-sm font-semibold">Customer</h2>
-          <CustomerPanel selected={customer} onSelect={setCustomer} summary={summary} />
-        </aside>
+    <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]">
+      <aside className="h-fit space-y-3 rounded-xl border border-[#253244] bg-[#111A25] p-4">
+        <div><h1 className="text-base font-semibold text-[#F5F7FA]">Customer accounts</h1><p className="mt-1 text-xs text-[#91A0B5]">Search or select a customer to review their account.</p></div>
+        <CustomerPanel selected={customer} onSelect={setCustomer} summary={summary} />
+      </aside>
 
-        <section className="min-w-0 space-y-6">
-          {!customer ? (
-            <p className="py-20 text-center text-neutral-500">Select a customer to see their balance, invoices and ledger.</p>
-          ) : (
-            <>
-              <SummaryCards summary={summary} />
-              <section className="space-y-3">
-                <h3 className="text-sm font-semibold">Open invoices</h3>
-                <OpenInvoices customerId={customer.id} refreshKey={refreshKey} />
-              </section>
-              <RecordPaymentForm customer={customer} owes={summary?.outstanding ?? 0} onSaved={changed} />
-              <PaymentHistory customer={customer} isAdmin={isAdmin} refreshKey={refreshKey} onChanged={changed} />
-              <LedgerTable customer={customer} refreshKey={refreshKey} summary={summary} />
-            </>
-          )}
-        </section>
-      </main>
+      <section className="min-w-0 space-y-5">
+        {!customer ? (
+          <div className="flex min-h-56 flex-col items-center justify-center rounded-xl border border-dashed border-[#253244] bg-[#111A25]/50 p-6 text-center">
+            <p className="text-sm font-medium text-[#F5F7FA]">Select a customer</p>
+            <p className="mt-1 text-xs text-[#91A0B5]">Their credit balance, invoices, payments and ledger will appear here.</p>
+          </div>
+        ) : (
+          <>
+            <SummaryCards summary={summary} />
+            <section className="space-y-3 rounded-xl border border-[#253244] bg-[#111A25] p-4">
+              <div><h2 className="text-sm font-semibold text-[#F5F7FA]">Open invoices</h2><p className="mt-1 text-xs text-[#91A0B5]">Unpaid and part-paid sales, oldest first.</p></div>
+              <OpenInvoices customerId={customer.id} refreshKey={refreshKey} />
+            </section>
+            <RecordPaymentForm customer={customer} owes={summary?.outstanding ?? 0} onSaved={changed} />
+            <PaymentHistory customer={customer} isAdmin={isAdmin} refreshKey={refreshKey} onChanged={changed} />
+            <LedgerTable customer={customer} refreshKey={refreshKey} summary={summary} />
+          </>
+        )}
+      </section>
     </div>
   );
 }

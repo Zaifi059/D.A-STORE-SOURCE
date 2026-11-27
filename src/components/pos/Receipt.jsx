@@ -6,8 +6,8 @@ export default function Receipt({ sale }) {
   const info = order.customer_info ?? {};
   const row = 'flex justify-between gap-2';
   const discount = Number(order.discount_amount ?? 0);
-  const received = Number(order.amount_received ?? order.total_amount);
   const change = Number(order.change_due ?? 0);
+  const received = Number(order.amount_received ?? order.total_amount) + change;
 
   return (
     <div id="receipt-print" className="mx-auto w-[302px] bg-white p-3 font-mono text-[12px] leading-snug text-black">
@@ -26,6 +26,7 @@ export default function Receipt({ sale }) {
       {items.map((i, idx) => (
         <div key={idx} className="mb-1">
           <p className="break-words">{i.name}{i.size ? ` · ${i.size}/${i.color}` : ''}</p>
+          {i.sku && <p className="text-[10px]">SKU: {i.sku}</p>}
           <div className={row}>
             <span>{i.quantity} x {formatPKR(i.price)}</span>
             <span>{formatPKR(i.quantity * i.price)}</span>
@@ -36,9 +37,9 @@ export default function Receipt({ sale }) {
       <div className={row}><span>Subtotal</span><span>{formatPKR(order.subtotal_amount ?? order.total_amount)}</span></div>
       {discount > 0 && <div className={row}><span>Discount</span><span>-{formatPKR(discount)}</span></div>}
       <div className={`${row} text-sm font-bold`}><span>TOTAL</span><span>{formatPKR(order.total_amount)}</span></div>
-      <div className={row}><span>Paid ({method === 'cash' ? 'Cash' : 'Bank transfer'})</span><span>{formatPKR(received)}</span></div>
+      <div className={row}><span>Received ({method === 'cash' ? 'Cash' : 'Bank transfer'})</span><span>{formatPKR(received)}</span></div>
       {change > 0 && <div className={row}><span>Change</span><span>{formatPKR(change)}</span></div>}
-      {Number(order.balance_due ?? 0) > 0 && (
+      {order.customer_id && Number(order.balance_due ?? 0) > 0 && (
         <div className={`${row} font-bold`}><span>Balance on account</span><span>{formatPKR(order.balance_due)}</span></div>
       )}
       <hr className="my-2 border-dashed border-black" />

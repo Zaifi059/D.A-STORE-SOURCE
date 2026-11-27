@@ -237,6 +237,14 @@ npm run preview
 
 ---
 
+## 🧾 POS DASHBOARD DATA
+
+The staff dashboard is available at `/dashboard`, and the two-column POS terminal at `/pos`, to cashier and admin accounts. Dashboard sales totals and channel charts include orders marked `completed` or `delivered`; pending and cancelled orders remain visible in recent transactions but are not counted as realized sales. Inventory valuation is retail value (including variant price overrides), not cost or gross profit.
+
+Sales are submitted through the existing `create_pos_sale` Supabase RPC, which validates stock and customer credit on the server. Realtime status is shown separately from database query status; if live updates are unavailable, refresh product data and rely on the server-side sale validation. Held sale drafts are temporary and remain in page memory only. Gross profit is not shown because the current application schema does not expose a dependable cost-price field. Store selection and tax are not configured in the current schema.
+
+---
+
 ## ☁️ DEPLOYMENT — NETLIFY
 
 D.A STORE includes a `netlify.toml` configuration and a `public/_redirects` file for single-page application routing.

@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Loader2, Plus, Save, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { formatPKR } from '../../lib/format';
-import { inputCls, labelCls, primaryBtnCls } from '../../lib/ui';
 
+const inputCls = 'w-full rounded-lg border border-[#253244] bg-[#080D14] px-3 py-2 text-sm text-[#F5F7FA] outline-none placeholder:text-[#91A0B5] focus:border-[#FF7818]';
+const labelCls = 'mb-1.5 block text-xs uppercase tracking-wide text-[#91A0B5]';
+const primaryBtnCls = 'flex w-full items-center justify-center gap-2 rounded-lg bg-[#FF7818] py-2.5 font-semibold text-white transition hover:bg-[#FF9A45] disabled:opacity-50';
 const toNumberOrNull = (v) => (v === '' || v == null ? null : Number(v));
 
 function VariantRow({ variant, onSaved, onError }) {
@@ -44,12 +46,12 @@ function VariantRow({ variant, onSaved, onError }) {
       <td className="p-2 text-center">
         <p className={`font-semibold ${variant.stock_count === 0 ? 'text-red-400' : ''}`}>{variant.stock_count}</p>
         <div className="mt-1 flex items-center gap-1">
-          <input aria-label={`Adjust stock for ${variant.size} ${variant.color}`} type="number" value={delta} onChange={(e) => setDelta(e.target.value)} placeholder="±" className="w-16 rounded border border-white/10 bg-white/5 px-2 py-1 text-xs" />
-          <button onClick={adjust} disabled={busy || !parseInt(delta, 10)} className="rounded bg-white/10 px-2 py-1 text-xs hover:bg-lime-500 hover:text-black disabled:opacity-40">Adjust</button>
+          <input aria-label={`Adjust stock for ${variant.size} ${variant.color}`} type="number" value={delta} onChange={(e) => setDelta(e.target.value)} placeholder="±" className="w-16 rounded border border-[#253244] bg-[#080D14] px-2 py-1 text-xs" />
+          <button onClick={adjust} disabled={busy || !parseInt(delta, 10)} className="rounded bg-[#151F2B] px-2 py-1 text-xs transition hover:bg-[#FF7818] hover:text-white disabled:opacity-40">Adjust</button>
         </div>
       </td>
-      <td className="p-2 text-center"><input type="checkbox" checked={draft.is_active} onChange={(e) => setDraft({ ...draft, is_active: e.target.checked })} className="accent-lime-500" aria-label="Active" /></td>
-      <td className="p-2"><button onClick={save} disabled={busy} className="rounded-full border border-white/15 p-2 hover:border-lime-500 disabled:opacity-40" aria-label="Save variant">{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}</button></td>
+      <td className="p-2 text-center"><input type="checkbox" checked={draft.is_active} onChange={(e) => setDraft({ ...draft, is_active: e.target.checked })} className="accent-[#FF7818]" aria-label="Active" /></td>
+      <td className="p-2"><button onClick={save} disabled={busy} className="rounded-lg border border-[#253244] p-2 transition hover:border-[#FF7818] hover:text-[#FF9A45] disabled:opacity-40" aria-label="Save variant">{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}</button></td>
     </tr>
   );
 }
@@ -120,20 +122,20 @@ export default function VariantsDialog({ product, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4">
-      <div role="dialog" aria-modal="true" aria-label={`Variants and pricing for ${product.name}`} className="my-8 w-full max-w-4xl space-y-6 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+      <div role="dialog" aria-modal="true" aria-label={`Variants and pricing for ${product.name}`} className="my-8 w-full max-w-4xl space-y-6 rounded-2xl border border-[#253244] bg-[#111A25] p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold">{product.name}</h2>
-            <p className="text-xs text-neutral-500">List price {formatPKR(product.price)} · Total stock across variants {total}</p>
+            <p className="text-xs text-[#91A0B5]">List price {formatPKR(product.price)} · Total stock across variants {total}</p>
           </div>
           <button onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
 
         {msg.text && (
-          <p role="status" className={`rounded-lg px-3 py-2 text-sm ${msg.type === 'ok' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>{msg.text}</p>
+          <p role="status" className={`rounded-lg px-3 py-2 text-sm ${msg.type === 'ok' ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300'}`}>{msg.text}</p>
         )}
 
-        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-950 p-4">
+        <section className="space-y-3 rounded-xl border border-[#253244] bg-[#080D14] p-4">
           <h3 className="text-sm font-semibold">Pricing and flags</h3>
           <div className="grid gap-3 sm:grid-cols-3">
             <div>
@@ -145,8 +147,8 @@ export default function VariantsDialog({ product, onClose }) {
               <input id="v-brand" className={inputCls} value={pricing.brand} onChange={(e) => setPricing({ ...pricing, brand: e.target.value })} />
             </div>
             <div className="flex items-end gap-4 pb-2 text-sm">
-              <label className="flex items-center gap-2"><input type="checkbox" checked={pricing.is_new} onChange={(e) => setPricing({ ...pricing, is_new: e.target.checked })} className="accent-lime-500" /> New arrival</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={pricing.is_featured} onChange={(e) => setPricing({ ...pricing, is_featured: e.target.checked })} className="accent-lime-500" /> Featured</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={pricing.is_new} onChange={(e) => setPricing({ ...pricing, is_new: e.target.checked })} className="accent-[#FF7818]" /> New arrival</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={pricing.is_featured} onChange={(e) => setPricing({ ...pricing, is_featured: e.target.checked })} className="accent-[#FF7818]" /> Featured</label>
             </div>
           </div>
           <button onClick={savePricing} disabled={busy} className={`${primaryBtnCls} sm:w-auto sm:px-6`}>Save pricing</button>
@@ -154,27 +156,27 @@ export default function VariantsDialog({ product, onClose }) {
 
         <section className="space-y-3">
           <h3 className="text-sm font-semibold">Size and color variants</h3>
-          <div className="overflow-x-auto rounded-xl border border-neutral-800">
+          <div className="overflow-x-auto rounded-xl border border-[#253244]">
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="bg-neutral-950 text-xs uppercase tracking-wide text-neutral-400">
+              <thead className="bg-[#080D14] text-xs uppercase tracking-wide text-[#91A0B5]">
                 <tr><th className="p-2">Size</th><th className="p-2">Color</th><th className="p-2">SKU</th><th className="p-2">Price override</th><th className="p-2 text-center">Stock / adjust</th><th className="p-2 text-center">Active</th><th className="p-2" /></tr>
               </thead>
-              <tbody className="divide-y divide-neutral-800">
+              <tbody className="divide-y divide-[#253244]">
                 {variants.map((v) => (
                   <VariantRow key={v.id} variant={v} onSaved={() => { ok('Saved.'); reload(); }} onError={fail} />
                 ))}
-                {variants.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-neutral-500">No variants yet. Add a size and color below.</td></tr>}
+                {variants.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-[#91A0B5]">No variants yet. Add a size and color below.</td></tr>}
               </tbody>
             </table>
           </div>
 
-          <form onSubmit={addVariant} className="grid gap-2 rounded-xl border border-dashed border-neutral-700 p-3 sm:grid-cols-6">
+          <form onSubmit={addVariant} className="grid gap-2 rounded-xl border border-dashed border-[#253244] p-3 sm:grid-cols-6">
             <input aria-label="New size" placeholder="Size (e.g. M)" className={inputCls} value={draft.size} onChange={(e) => setDraft({ ...draft, size: e.target.value })} />
             <input aria-label="New color" placeholder="Color (e.g. Black)" className={inputCls} value={draft.color} onChange={(e) => setDraft({ ...draft, color: e.target.value })} />
             <input aria-label="New SKU" placeholder="SKU (optional)" className={inputCls} value={draft.sku} onChange={(e) => setDraft({ ...draft, sku: e.target.value })} />
             <input aria-label="New price override" type="number" min="0" placeholder="Price override" className={inputCls} value={draft.price_override} onChange={(e) => setDraft({ ...draft, price_override: e.target.value })} />
             <input aria-label="Initial stock" type="number" min="0" placeholder="Initial stock" className={inputCls} value={draft.stock} onChange={(e) => setDraft({ ...draft, stock: e.target.value })} />
-            <button type="submit" disabled={busy} className="flex items-center justify-center gap-1.5 rounded-full bg-lime-500 px-4 py-2 text-sm font-semibold text-black hover:bg-lime-400 disabled:opacity-40">
+            <button type="submit" disabled={busy} className="flex items-center justify-center gap-1.5 rounded-lg bg-[#FF7818] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#FF9A45] disabled:opacity-40">
               <Plus className="h-4 w-4" /> Add variant
             </button>
           </form>

@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { deleteProductImage, uploadProductImage } from '../../lib/storage';
 
 const inputCls =
-  'w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm focus:border-lime-500 focus:outline-none';
+  'w-full rounded-lg border border-[#253244] bg-[#080D14] px-3 py-2 text-sm text-[#F5F7FA] outline-none placeholder:text-[#91A0B5] focus:border-[#FF7818]';
 
 const blank = {
   name: '', description: '', price: '', category: '', vton_category: 'auto',
@@ -89,17 +89,17 @@ export default function ProductForm({ product, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/80" onClick={busy ? undefined : onClose} />
-      <form onSubmit={submit} className="relative max-h-[92vh] w-full max-w-xl space-y-3 overflow-y-auto rounded-2xl border border-lime-500/30 bg-neutral-900 p-5">
+      <form onSubmit={submit} className="relative max-h-[92vh] w-full max-w-xl space-y-3 overflow-y-auto rounded-2xl border border-[#253244] bg-[#111A25] p-5 shadow-2xl">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">{isEdit ? 'Edit product' : 'Add product'}</h2>
           <button type="button" onClick={onClose} disabled={busy} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
 
-        <label className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-neutral-700 p-3 hover:border-lime-500">
+        <label className="flex cursor-pointer items-center gap-4 rounded-lg border border-dashed border-[#253244] p-3 transition hover:border-[#FF7818]">
           {preview
             ? <img src={preview} alt="" className="h-20 w-16 rounded object-cover" />
-            : <div className="flex h-20 w-16 items-center justify-center rounded bg-neutral-800"><ImagePlus className="h-6 w-6 text-lime-400" /></div>}
-          <span className="text-sm text-neutral-300">Click to {preview ? 'replace' : 'upload'} image (JPG, PNG, WebP · max 5 MB)</span>
+            : <div className="flex h-20 w-16 items-center justify-center rounded bg-[#151F2B]"><ImagePlus className="h-6 w-6 text-[#FF9A45]" /></div>}
+          <span className="text-sm text-[#91A0B5]">Click to {preview ? 'replace' : 'upload'} image (JPG, PNG, WebP · max 5 MB)</span>
           <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         </label>
 
@@ -123,13 +123,13 @@ export default function ProductForm({ product, onClose }) {
         </div>
 
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={f.is_active} onChange={(e) => setF((s) => ({ ...s, is_active: e.target.checked }))} className="accent-lime-500" />
+          <input type="checkbox" checked={f.is_active} onChange={(e) => setF((s) => ({ ...s, is_active: e.target.checked }))} className="accent-[#FF7818]" />
           Active (visible in store and POS)
         </label>
 
         {error && <p className="text-sm text-red-400">{error}</p>}
 
-        <button type="submit" disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-full bg-lime-500 py-2.5 font-semibold text-black hover:bg-lime-400 disabled:opacity-50">
+        <button type="submit" disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FF7818] py-2.5 font-semibold text-white transition hover:bg-[#FF9A45] disabled:opacity-50">
           {busy && <Loader2 className="h-4 w-4 animate-spin" />} {isEdit ? 'Save changes' : 'Create product'}
         </button>
       </form>

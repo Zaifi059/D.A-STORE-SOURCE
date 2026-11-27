@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from './ProductCard';
 
@@ -10,7 +10,7 @@ import ProductCard from './ProductCard';
  * ordered by creation date (the default feed order already is).
  */
 export default function ProductGrid({ title, sortBy }) {
-  const { products, loading, error } = useProducts();
+  const { products, loading, error, refresh } = useProducts();
   const [params] = useSearchParams();
   const [category, setCategory] = useState(params.get('category') ?? 'All');
   const q = (params.get('q') ?? '').trim().toLowerCase();
@@ -34,7 +34,26 @@ export default function ProductGrid({ title, sortBy }) {
   if (loading) {
     return <div className="flex justify-center py-24"><Loader2 className="h-8 w-8 animate-spin text-lime-500" /></div>;
   }
-  if (error) return <p className="py-24 text-center text-red-400">Couldn't load products: {error}</p>;
+  if (error) {
+    const expiredSession = /jwt expired/i.test(error);
+    return (
+      <div role="alert" className="mx-auto flex max-w-xl flex-col items-center gap-4 py-24 text-center">
+        <p className="text-red-400">
+          {expiredSession
+            ? 'Your saved sign-in has expired. Retry to refresh your session and load products.'
+            : `Couldn't load products: ${error}`}
+        </p>
+        <button
+          type="button"
+          onClick={refresh}
+          className="inline-flex items-center gap-2 rounded-full border border-lime-500/40 px-4 py-2 text-sm text-lime-400 transition hover:border-lime-400 hover:bg-lime-500/10"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section>
